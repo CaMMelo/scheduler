@@ -1,4 +1,4 @@
-    import sqlite3 as sql
+import sqlite3 as sql
 
 conn = None
 cursor = None
