@@ -27,16 +27,4 @@ db.open_connection('CaMMelo.sqlite')
 
 # schedule.enable('2018-02-19', '2018-07-13')
 
-dispose = schedule.free_time_until(context_size, work_begin, work_end, dt_begin, dt_end)
-
-print(dispose)
-
-dispose = schedule.free_contexts_until(context_size, work_begin, work_end, dt_begin, dt_end)
-
-print(len(dispose))
-
-for c in dispose:
-    
-    print(c)
-
 db.close_connection()
