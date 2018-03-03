@@ -3,11 +3,11 @@ from core import weekly_schedule
 from core import schedule
 
 context_size = 120 # 2 hours
-work_begin = '00:00'
-work_end = '23:59'
+work_begin = '08:00'
+work_end = '22:40'
 
 dt_begin = '2018-03-05 00:00'
-dt_end = '2018-07-13 23:59'
+dt_end = '2018-07-13 00:00'
 
 # db.create_database('CaMMelo.sqlite')
 db.open_connection('CaMMelo.sqlite')
