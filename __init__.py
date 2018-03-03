@@ -3,7 +3,7 @@ from core import weekly_schedule
 from core import schedule
 
 context_size = 120 # 2 hours
-work_begin = '08:00'
+work_begin = '07:00'
 work_end = '22:40'
 
 dt_begin = '2018-03-05 00:00'
@@ -27,7 +27,7 @@ db.open_connection('CaMMelo.sqlite')
 
 # schedule.enable('2018-03-05', '2018-07-13')
 
-time = schedule.free_contexts_until(context_size, work_begin, work_end, dt_begin, dt_end)
+time = schedule.free_contexts_until(context_size, work_begin, work_end, dt_begin, dt_end, weekends = False)
 
 for t in time:
 
