@@ -20,7 +20,7 @@ class schedule:
         return scalable_task.remove_task_from_schedule(tid, self.date)
 
     def get_tasks(self):
-        
+
         return get_task_list(self.date)
 
     def set_date(self, date):
@@ -101,11 +101,11 @@ def get_task_list(date):
     # return all the tasks marked to date
 
     db.cursor.execute('''SELECT task.id
-        FROM ((task_schedule INNER JOIN scalable_task ON task_id = task.id) 
+        FROM ((task_schedule INNER JOIN scalable_task ON task_id = task.id)
         INNER JOIN task ON scalable_task.id = task.id)
         INNER JOIN schedule on schedule.id = schedule_id
         WHERE date = ? ORDER BY start''', [date])
-    
+
     tlist = []
 
     for t in db.cursor.fetchall():
@@ -187,7 +187,7 @@ def free_time_until(context_duration, work_begin, work_end, date_begin, date_end
         dt = currentdate.date()
 
         if ((not weekends) and (dt.weekday() > 4)) or (dt.strftime(DATE_FORMAT) in avoid):
-            
+
             currentdate += daydelta
             continue
 
@@ -225,7 +225,7 @@ def free_time_until(context_duration, work_begin, work_end, date_begin, date_end
 
                 finish = init + deltatime
         else:
-            
+
             total += int((end - init).seconds / (60 * (context_duration + time_gap.seconds / 60)) )
 
         currentdate += daydelta
@@ -234,7 +234,7 @@ def free_time_until(context_duration, work_begin, work_end, date_begin, date_end
 
 
 def free_contexts_until(context_duration, work_begin, work_end, date_begin, date_end, time_gap = 20, weekends=True, avoid=[]):
-    
+
     # get the contexts between two datetimes
     # and in each day between work_begin and work_end
 
@@ -254,13 +254,13 @@ def free_contexts_until(context_duration, work_begin, work_end, date_begin, date
     currentdate = date_begin
 
     total = []
-    
+
     while currentdate <= date_end:
 
         dt = currentdate.date()
 
         if ((not weekends) and (dt.weekday() > 4)) or (dt.strftime(DATE_FORMAT) in avoid):
-            
+
             currentdate += daydelta
             continue
 
@@ -287,9 +287,12 @@ def free_contexts_until(context_duration, work_begin, work_end, date_begin, date
             while (init <= end) and (finish <= end):
 
                 if (i < len(t)) and ((finish + time_gap > t[i][0])) and ((init > t[i][0]) or (init < t[i][1])):
+
                     init = t[i][1] + time_gap
                     i += 1
+
                 else:
+
                     total.append((datetime.combine(currentdate, init.time()), datetime.combine(currentdate, finish.time())))
                     init = finish + time_gap
 
