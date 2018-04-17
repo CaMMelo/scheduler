@@ -205,4 +205,4 @@ def select(context_size, work_begin, work_end, date_begin, date_end, time_gap = 
 
     save_solution(db_state, s_optimal)
 
-    return feasible(s_optimal)
+    return feasible(s_optimal, pack_size, db_state)

@@ -1,5 +1,5 @@
 from . import database as db
-from . import schedule
+from . import schedule as sch
 from . import scalable_task
 from . import DATE_FORMAT, TIME_FORMAT, DATETIME_FORMAT
 from datetime import datetime
@@ -24,7 +24,7 @@ def retrieve(context_duration, work_begin, work_end, date_begin, date_end, time_
     while i < len(projects):
 
         deadline = min(datetime.strptime(projects[i][2], DATETIME_FORMAT), datetime.strptime(date_end, DATETIME_FORMAT))
-        free = schedule.free_time_until(context_duration, work_begin, work_end, date_begin, deadline.strftime(DATETIME_FORMAT), time_gap, weekends, avoid)
+        free = sch.free_time_until(context_duration, work_begin, work_end, date_begin, deadline.strftime(DATETIME_FORMAT), time_gap, weekends, avoid)
         projects[i][2] = datetime.strptime(projects[i][2], '%Y-%m-%d  %H:%M')
         projects[i][3] = ceil((projects[i][3] - projects[i][3] * projects[i][4]) / context_duration)
 
@@ -91,6 +91,8 @@ def f_neighboor(solution, context, projects):
 def save_solution(solution, projects, contexts):
 
     # save a given solution to the database
+    
+    print(solution)
 
     schedules = {}
 
@@ -99,8 +101,8 @@ def save_solution(solution, projects, contexts):
         date = c[0].strftime(DATE_FORMAT)
 
         if date not in schedules:
-            schedules[date] = schedule.create(date).id
-
+            schedules[date] = sch.create(date).id
+    
     esc = []
 
     i = 0
@@ -110,12 +112,12 @@ def save_solution(solution, projects, contexts):
             i += 1
             continue
 
-        sch = contexts[i][0].strftime(DATE_FORMAT)
+        sch_ = contexts[i][0].strftime(DATE_FORMAT)
         start = contexts[i][0].strftime(TIME_FORMAT)
         finish = contexts[i][1].strftime(TIME_FORMAT)
         name = projects[s][1]
 
-        id = scalable_task.create([schedules[sch]], name, start, finish).id
+        id = scalable_task.create([sch_,], [], name, start, finish).id
 
         db.cursor.execute('INSERT INTO scalable_task_project VALUES(?, ?)', [id, projects[s][0]])
 
@@ -135,7 +137,7 @@ def schedule(context_duration, work_begin, work_end, date_begin, date_end, time_
 
     # get the necessary informations
     projects = retrieve(context_duration, work_begin, work_end, date_begin, date_end)
-    contexts = schedule.free_contexts_until(context_duration, work_begin, work_end, date_begin, date_end, time_gap, weekends, avoid)
+    contexts = sch.free_contexts_until(context_duration, work_begin, work_end, date_begin, date_end, time_gap, weekends, avoid)
 
     # NOTE: check if there is no conflicts with the selected projects
     # if there is some abort the scheduling
@@ -191,6 +193,6 @@ def schedule(context_duration, work_begin, work_end, date_begin, date_end, time_
             temp *= alpha
 
     save_solution(s_best, projects, contexts)
-    
+
     # return the solution
     return s_best
